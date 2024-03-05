@@ -113,10 +113,10 @@ RUN source /venv/bin/activate && \
 
 # Cache the Stable Diffusion Models
 # SDXL models result in OOM kills with 8GB system memory, need 30GB+ to cache these
-RUN source /venv/bin/activate && \
-    python3 cache-sd-model.py --no-half-vae --no-half --xformers --use-cpu=all --ckpt /sd-models/sd_xl_base_1.0.safetensors && \
-    python3 cache-sd-model.py --no-half-vae --no-half --xformers --use-cpu=all --ckpt /sd-models/sd_xl_refiner_1.0.safetensors && \
-    deactivate
+#RUN source /venv/bin/activate && \
+#    python3 cache-sd-model.py --no-half-vae --no-half --xformers --use-cpu=all --ckpt /sd-models/sd_xl_base_1.0.safetensors && \
+#    python3 cache-sd-model.py --no-half-vae --no-half --xformers --use-cpu=all --ckpt /sd-models/sd_xl_refiner_1.0.safetensors && \
+#    deactivate
 
 # Clone the Automatic1111 Extensions
 # Deforum not currently working with A1111 v1.8.0
@@ -186,6 +186,31 @@ RUN echo "CUDA" > /stable-diffusion-webui/extensions/sd-webui-reactor/last_devic
 RUN pip3 uninstall -y tensorboard tb-nightly && \
     pip3 install tensorboard==2.15.2 tensorflow && \
     pip3 cache purge
+
+# Add SDXL models and VAE
+# These need to already have been downloaded:
+#   wget https://huggingface.co/lllyasviel/fav_models/resolve/main/fav/realisticVisionV51_v51VAE.safetensors
+COPY realisticVisionV51_v51VAE.safetensors /sd-models/realisticVisionV51_v51VAE.safetensors
+
+# Install the dependencies for Stable Diffusion WebUI Forge
+WORKDIR /stable-diffusion-webui-forge
+ENV TORCH_INDEX_URL="https://download.pytorch.org/whl/cu121"
+ENV TORCH_COMMAND="pip install torch==2.1.2 torchvision --index-url ${TORCH_INDEX_URL}"
+ENV XFORMERS_PACKAGE="xformers==0.0.23.post1"
+RUN python3 -m venv --system-site-packages venv && \
+    source venv/bin/activate && \
+    ${TORCH_COMMAND} && \
+    pip3 install -r requirements_versions.txt --extra-index-url ${TORCH_INDEX_URL} && \
+    pip3 install ${XFORMERS_PACKAGE} &&  \
+    deactivate
+
+COPY forge/cache-sd-model.py forge/install-forge.py ./
+RUN source /venv/bin/activate && \
+    python3 -m install-forge --skip-torch-cuda-test && \
+    deactivate
+
+# Copy Stable Diffusion WebUI Forge config files
+COPY forge/relauncher.py forge/webui-user.sh forge/config.json forge/ui-config.json /stable-diffusion-webui-forge/
 
 # Install Kohya_ss
 RUN git clone https://github.com/bmaltais/kohya_ss.git /kohya_ss

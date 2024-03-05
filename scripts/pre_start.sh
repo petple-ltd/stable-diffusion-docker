@@ -25,6 +25,11 @@ sync_apps() {
     rsync --remove-source-files -rlptDu /${APP}/ /workspace/${APP}/
     rm -rf /stable-diffusion-webui
 
+    # Sync forge to workspace to support Network volumes
+    echo "Syncing Forge to workspace, please wait..."
+    rsync --remove-source-files -rlptDu /stable-diffusion-webui-forge/ /workspace/stable-diffusion-webui-forge/
+    rm -rf /stable-diffusion-webui-forge
+
     # Sync Kohya_ss to workspace to support Network volumes
     echo "Syncing Kohya_ss to workspace, please wait..."
     rsync --remove-source-files -rlptDu /kohya_ss/ /workspace/kohya_ss/
@@ -47,6 +52,9 @@ sync_apps() {
 fix_venvs() {
     echo "Fixing Stable Diffusion Web UI venv..."
     /fix_venv.sh /venv ${VENV_PATH}
+
+    echo "Fixing Forge venv..."
+    /fix_venv.sh /stable-diffusion-webui-forge/venv /workspace/stable-diffusion-webui-forge/venv
 
     echo "Fixing Kohya_ss venv..."
     /fix_venv.sh /kohya_ss/venv /workspace/kohya_ss/venv
@@ -115,6 +123,7 @@ then
     echo "   /start_comfyui.sh"
 else
     /start_a1111.sh
+    /start_forge.sh
     /start_kohya.sh
     /start_comfyui.sh
 fi
