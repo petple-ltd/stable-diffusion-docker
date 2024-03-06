@@ -1,9 +1,9 @@
 # Stage 1: Base
-FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as base
+FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04 as base
 
-ARG TORCH_VERSION=2.0.1
-ARG INDEX_URL="https://download.pytorch.org/whl/cu118"
-ARG XFORMERS_VERSION=0.0.22
+ARG TORCH_VERSION=2.1.2
+ARG INDEX_URL="https://download.pytorch.org/whl/cu121"
+ARG XFORMERS_VERSION=0.0.23.post1
 ARG WEBUI_VERSION=v1.8.0
 ARG DREAMBOOTH_COMMIT=30bfbc289a1d90153a3e5a5ab92bf5636e66b210
 ARG KOHYA_VERSION=v22.6.2
@@ -199,14 +199,10 @@ RUN git clone https://github.com/lllyasviel/stable-diffusion-webui-forge.git && 
 
 # Install the dependencies for Stable Diffusion WebUI Forge
 WORKDIR /stable-diffusion-webui-forge
-ENV TORCH_INDEX_URL="https://download.pytorch.org/whl/cu121"
-ENV TORCH_COMMAND="pip install torch==2.1.2 torchvision --index-url ${TORCH_INDEX_URL}"
-ENV XFORMERS_PACKAGE="xformers==0.0.23.post1"
-RUN python3 -m venv --system-site-packages venv && \
-    source venv/bin/activate && \
-    ${TORCH_COMMAND} && \
-    pip3 install -r requirements_versions.txt --extra-index-url ${TORCH_INDEX_URL} && \
-    pip3 install ${XFORMERS_PACKAGE} &&  \
+RUN source /venv/bin/activate && \
+    pip3 install --no-cache-dir torch==${TORCH_VERSION} torchvision --index-url ${INDEX_URL} && \
+    pip3 install --no-cache-dir -r requirements_versions.txt --extra-index-url ${INDEX_URL} && \
+    pip3 install --no-cache-dir xformers==${XFORMERS_VERSION} &&  \
     deactivate
 
 COPY forge/cache-sd-model.py forge/install-forge.py ./
