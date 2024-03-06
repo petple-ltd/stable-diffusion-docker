@@ -192,6 +192,11 @@ RUN pip3 uninstall -y tensorboard tb-nightly && \
 #   wget https://huggingface.co/lllyasviel/fav_models/resolve/main/fav/realisticVisionV51_v51VAE.safetensors
 COPY realisticVisionV51_v51VAE.safetensors /sd-models/realisticVisionV51_v51VAE.safetensors
 
+# Clone the git repo of Stable Diffusion WebUI Forge and set version
+WORKDIR /
+RUN git clone https://github.com/lllyasviel/stable-diffusion-webui-forge.git && \
+    cd /stable-diffusion-webui-forge
+
 # Install the dependencies for Stable Diffusion WebUI Forge
 WORKDIR /stable-diffusion-webui-forge
 ENV TORCH_INDEX_URL="https://download.pytorch.org/whl/cu121"
