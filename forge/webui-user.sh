@@ -7,7 +7,7 @@
 install_dir="/workspace"
 
 # Name of the subdirectory
-#clone_dir="stable-diffusion-webui"
+clone_dir="stable-diffusion-webui-forge"
 
 # Commandline arguments for webui.py, for example: export COMMANDLINE_ARGS="--medvram --opt-split-attention"
 export COMMANDLINE_ARGS="--port 3031 --listen --api --xformers --enable-insecure-extension-access --no-half-vae"
@@ -19,7 +19,7 @@ export COMMANDLINE_ARGS="--port 3031 --listen --api --xformers --enable-insecure
 #export GIT="git"
 
 # python3 venv without trailing slash (defaults to ${install_dir}/${clone_dir}/venv)
-venv_dir="/workspace/venv"
+#venv_dir="/workspace/venv"
 
 # script to launch to start the app
 #export LAUNCH_SCRIPT="launch.py"
