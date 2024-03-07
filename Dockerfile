@@ -198,14 +198,15 @@ RUN git clone https://github.com/lllyasviel/stable-diffusion-webui-forge.git && 
 
 # Install the dependencies for Stable Diffusion WebUI Forge
 WORKDIR /stable-diffusion-webui-forge
-RUN source /venv/bin/activate && \
+RUN python3 -m venv --system-site-packages venv && \
+    source venv/bin/activate && \
     pip3 install --no-cache-dir torch==${TORCH_VERSION} torchvision --index-url ${INDEX_URL} && \
     pip3 install --no-cache-dir -r requirements_versions.txt --extra-index-url ${INDEX_URL} && \
     pip3 install --no-cache-dir xformers==${XFORMERS_VERSION} &&  \
     deactivate
 
 COPY forge/cache-sd-model.py forge/install-forge.py ./
-RUN source /venv/bin/activate && \
+RUN source venv/bin/activate && \
     python3 -m install-forge --skip-torch-cuda-test && \
     deactivate
 
