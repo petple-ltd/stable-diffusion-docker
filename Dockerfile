@@ -1,8 +1,9 @@
 # Stage 1: Base
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as base
 
+ARG CU_VERSION=121
+ARG INDEX_URL="https://download.pytorch.org/whl/cu${CU_VERSION}"
 ARG TORCH_VERSION=2.1.2
-ARG INDEX_URL="https://download.pytorch.org/whl/cu121"
 ARG XFORMERS_VERSION=0.0.23.post1
 ARG WEBUI_VERSION=v1.8.0
 ARG DREAMBOOTH_COMMIT=30bfbc289a1d90153a3e5a5ab92bf5636e66b210
@@ -72,8 +73,9 @@ RUN apt update && \
 RUN ln -s /usr/bin/python3.10 /usr/bin/python
 
 # Install Torch, xformers and tensorrt
-RUN pip3 install --no-cache-dir torch==${TORCH_VERSION} torchvision torchaudio --index-url ${INDEX_URL} && \
-    pip3 install --no-cache-dir xformers==${XFORMERS_VERSION} tensorrt
+RUN pip3 install --no-cache-dir torch==${TORCH_VERSION}+cu${CU_VERSION} torchvision torchaudio --index-url ${INDEX_URL} && \
+    pip3 install --no-cache-dir xformers==${XFORMERS_VERSION}+cu${CU_VERSION} --index-url ${INDEX_URL} &&  \
+    pip3 install --no-cache-dir tensorrt
 
 # Stage 2: Install applications
 FROM base as setup
@@ -99,8 +101,8 @@ RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git && \
 WORKDIR /stable-diffusion-webui
 RUN python3 -m venv --system-site-packages /venv && \
     source /venv/bin/activate && \
-    pip3 install --no-cache-dir torch==${TORCH_VERSION} torchvision torchaudio --index-url ${INDEX_URL} && \
-    pip3 install --no-cache-dir xformers==${XFORMERS_VERSION} && \
+    pip3 install --no-cache-dir torch==${TORCH_VERSION}+cu${CU_VERSION} torchvision torchaudio --index-url ${INDEX_URL} && \
+    pip3 install --no-cache-dir xformers==${XFORMERS_VERSION}+cu${CU_VERSION} --index-url ${INDEX_URL} &&  \
     pip3 install tensorflow[and-cuda] && \
     deactivate
 
@@ -214,20 +216,30 @@ RUN source venv/bin/activate && \
 COPY forge/relauncher.py forge/webui-user.sh forge/config.json forge/ui-config.json /stable-diffusion-webui-forge/
 
 # Install Kohya_ss
-RUN git clone https://github.com/bmaltais/kohya_ss.git /kohya_ss
+RUN git clone https://github.com/bmaltais/kohya_ss.git /kohya_ss && \
+    cd /kohya_ss && \
+    git checkout ${KOHYA_VERSION}
+
 WORKDIR /kohya_ss
 COPY kohya_ss/requirements* ./
-RUN git checkout ${KOHYA_VERSION} && \
-    python3 -m venv --system-site-packages venv && \
+RUN python3 -m venv --system-site-packages venv && \
     source venv/bin/activate && \
-    pip3 install --no-cache-dir torch==${TORCH_VERSION} torchvision torchaudio --index-url ${INDEX_URL} && \
-    pip3 install --no-cache-dir xformers==${XFORMERS_VERSION} \
-        bitsandbytes==0.41.1 \
-        tensorboard==2.14.1 \
-        tensorflow==2.14.0 \
+    pip3 install --no-cache-dir torch==${TORCH_VERSION}+cu${CU_VERSION} torchvision torchaudio --index-url ${INDEX_URL} && \
+    pip3 install --no-cache-dir xformers==${XFORMERS_VERSION}+cu${CU_VERSION} --index-url ${INDEX_URL} && \
+    deactivate
+
+# Although these requirements are in runpod_requirements.txt, we get an error
+# if we try to install the runpod_requirements.txt file due to torch and xformers versions
+RUN source venv/bin/activate && \
+    pip3 install --no-cache-dir bitsandbytes==0.41.2 \
+        tensorboard==2.15.2 \
+        tensorflow==2.15.0.post1 \
         wheel \
-        scipy \
         tensorrt && \
+    deactivate
+
+# Install additional Kohya_ss requirements and library
+RUN source venv/bin/activate && \
     pip3 install -r requirements.txt && \
     pip3 install . && \
     pip3 cache purge && \
@@ -238,8 +250,8 @@ RUN git clone https://github.com/comfyanonymous/ComfyUI.git /ComfyUI
 WORKDIR /ComfyUI
 RUN python3 -m venv --system-site-packages venv && \
     source venv/bin/activate && \
-    pip3 install --no-cache-dir torch==${TORCH_VERSION} torchvision torchaudio --index-url ${INDEX_URL} && \
-    pip3 install --no-cache-dir xformers==${XFORMERS_VERSION} && \
+    pip3 install --no-cache-dir torch==${TORCH_VERSION}+cu${CU_VERSION} torchvision torchaudio --index-url ${INDEX_URL} && \
+    pip3 install --no-cache-dir xformers==${XFORMERS_VERSION}+cu${CU_VERSION} --index-url ${INDEX_URL} &&  \
     pip3 install -r requirements.txt && \
     deactivate
 
@@ -308,7 +320,7 @@ COPY nginx/nginx.conf /etc/nginx/nginx.conf
 COPY nginx/502.html /usr/share/nginx/html/502.html
 
 # Set template version
-ENV TEMPLATE_VERSION=4.0.1
+ENV TEMPLATE_VERSION=4.1.0
 
 # Set the main venv path
 ENV VENV_PATH="/workspace/venvs/stable-diffusion-webui"
