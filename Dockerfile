@@ -1,7 +1,7 @@
 # Stage 1: Base
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as base
 
-ARG CU_VERSION=121
+ARG CU_VERSION=118
 ARG INDEX_URL="https://download.pytorch.org/whl/cu${CU_VERSION}"
 ARG TORCH_VERSION=2.1.2
 ARG XFORMERS_VERSION=0.0.23.post1

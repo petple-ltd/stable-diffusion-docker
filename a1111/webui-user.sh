@@ -25,7 +25,7 @@ venv_dir=VENV_PATH
 #export LAUNCH_SCRIPT="launch.py"
 
 # install command for torch
-# export TORCH_COMMAND="pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121"
+# export TORCH_COMMAND="pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118"
 
 # Requirements file to use for stable-diffusion-webui
 #export REQS_FILE="requirements_versions.txt"
