@@ -12,6 +12,7 @@ clone_dir="stable-diffusion-webui-forge"
 # Commandline arguments for webui.py, for example: export COMMANDLINE_ARGS="--medvram --opt-split-attention"
 export COMMANDLINE_ARGS="--port 3031 --listen --api --xformers --enable-insecure-extension-access --no-half-vae"
 
+export TORCH_INDEX_URL="https://download.pytorch.org/whl/cu118"
 # python3 executable
 #python_cmd="python3"
 
