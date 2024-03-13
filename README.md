@@ -26,7 +26,7 @@ Now with SDXL support.
 * [Infinite Image Browsing extension](https://github.com/zanllp/sd-webui-infinite-image-browsing)
 * [CivitAI extension](https://github.com/civitai/sd_civitai_extension)
 * [CivitAI Browser+ extension](https://github.com/BlafKing/sd-civitai-browser-plus)
-* [Kohya_ss](https://github.com/bmaltais/kohya_ss) v22.6.2
+* [Kohya_ss](https://github.com/bmaltais/kohya_ss) v23.0.7
 * [ComfyUI](https://github.com/comfyanonymous/ComfyUI)
 * [ComfyUI Manager](https://github.com/ltdrdata/ComfyUI-Manager)
 * [sd_xl_base_1.0.safetensors](
@@ -53,10 +53,16 @@ to launch it on RunPod.
 
 ## Building the Docker image
 
-In order to cache the models, you will need at least 32GB of CPU/system
-memory (not VRAM) due to the large size of the models.  If you have less
-than 32GB of system memory, you can comment out or remove the code in the
-`Dockerfile` that caches the models.
+> [!NOTE]
+> You will need to edit the `docker-bake.hcl` file and update `RELEASE`,
+> and `tags`.  You can obviously edit the other values too, but these
+> are the most important ones.
+
+> [!IMPORTANT]
+> In order to cache the models, you will need at least 32GB of CPU/system
+> memory (not VRAM) due to the large size of the models.  If you have less
+> than 32GB of system memory, you can comment out or remove the code in the
+> `Dockerfile` that caches the models.
 
 ```bash
 # Clone the repo
@@ -70,14 +76,11 @@ wget https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/mai
 wget https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors
 wget https://huggingface.co/madebyollin/sdxl-vae-fp16-fix/resolve/main/sdxl_vae.safetensors
 
-# Build and tag the image
-docker build -t username/image-name:1.0.0 .
-
 # Log in to Docker Hub
 docker login
 
-# Push the image to Docker Hub
-docker push username/image-name:1.0.0
+# Build the image, tag the image, and push the image to Docker Hub
+docker buildx bake -f docker-bake.hcl --push
 ```
 
 ## Running Locally

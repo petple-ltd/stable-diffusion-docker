@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+export PYTHONUNBUFFERED=1
 echo "Starting Stable Diffusion WebUI Forge"
 export HF_HOME="/workspace"
 cd /workspace/stable-diffusion-webui-forge
