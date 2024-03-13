@@ -8,7 +8,7 @@ variable "CU_VERSION" {
 
 target "default" {
     dockerfile = "Dockerfile"
-    tags = ["probepark/stable-diffusion-webui:${RELEASE}"]
+    tags = ["probepark/stable-diffusion-webui-base:${RELEASE}"]
     args = {
         RELEASE = "${RELEASE}"
         INDEX_URL = "https://download.pytorch.org/whl/cu${CU_VERSION}"
