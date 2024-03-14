@@ -1,5 +1,9 @@
 # Docker image for A1111 Stable Diffusion Web UI, Kohya_ss and ComfyUI
 
+[![GitHub Repo](https://img.shields.io/badge/github-repo-green?logo=github)](https://github.com/ashleykleynhans/stable-diffusion-docker)
+[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/ashleykza/stable-diffusion-webui?logo=docker&label=dockerhub&color=blue)](https://hub.docker.com/repository/docker/ashleykza/stable-diffusion-webui)
+[![RunPod.io Template](https://img.shields.io/badge/runpod_template-deploy-9b4ce6?logo=linuxcontainers&logoColor=9b4ce6)](https://runpod.io/gsc?template=ya6013lj5a&ref=2xxro4sy)
+
 Now with SDXL support.
 
 ## Installs
@@ -26,7 +30,7 @@ Now with SDXL support.
 * [Infinite Image Browsing extension](https://github.com/zanllp/sd-webui-infinite-image-browsing)
 * [CivitAI extension](https://github.com/civitai/sd_civitai_extension)
 * [CivitAI Browser+ extension](https://github.com/BlafKing/sd-civitai-browser-plus)
-* [Kohya_ss](https://github.com/bmaltais/kohya_ss) v23.0.7
+* [Kohya_ss](https://github.com/bmaltais/kohya_ss) v23.0.11
 * [ComfyUI](https://github.com/comfyanonymous/ComfyUI)
 * [ComfyUI Manager](https://github.com/ltdrdata/ComfyUI-Manager)
 * [sd_xl_base_1.0.safetensors](
@@ -124,11 +128,12 @@ You can obviously substitute the image name and tag with your own.
 
 ### Environment Variables
 
-| Variable           | Description                                  | Default                                 |
-|--------------------|----------------------------------------------|-----------------------------------------|
-| VENV_PATH          | Set the path for the Python venv for the app | /workspace/venvs/stable-diffusion-webui |
-| DISABLE_AUTOLAUNCH | Disable Web UIs from launching automatically | enabled                                 |
-| ENABLE_TENSORBOARD | Enables Tensorboard on port 6006             | enabled                                 |
+| Variable             | Description                                  | Default                                 |
+|----------------------|----------------------------------------------|-----------------------------------------|
+| VENV_PATH            | Set the path for the Python venv for the app | /workspace/venvs/stable-diffusion-webui |
+| JUPYTER_LAB_PASSWORD | Set a password for Jupyter lab               | not set - no password                   |
+| DISABLE_AUTOLAUNCH   | Disable Web UIs from launching automatically | enabled                                 |
+| ENABLE_TENSORBOARD   | Enables Tensorboard on port 6006             | enabled                                 |
 
 ## Logs
 
