@@ -108,10 +108,10 @@ RUN source /venv/bin/activate && \
 
 # Cache the Stable Diffusion Models
 # SDXL models result in OOM kills with 8GB system memory, need 30GB+ to cache these
-#RUN source /venv/bin/activate && \
-#    python3 cache-sd-model.py --no-half-vae --no-half --xformers --use-cpu=all --ckpt /sd-models/sd_xl_base_1.0.safetensors && \
-#    python3 cache-sd-model.py --no-half-vae --no-half --xformers --use-cpu=all --ckpt /sd-models/sd_xl_refiner_1.0.safetensors && \
-#    deactivate
+RUN source /venv/bin/activate && \
+    python3 cache-sd-model.py --no-half-vae --no-half --xformers --use-cpu=all --ckpt /sd-models/sd_xl_base_1.0.safetensors && \
+    python3 cache-sd-model.py --no-half-vae --no-half --xformers --use-cpu=all --ckpt /sd-models/sd_xl_refiner_1.0.safetensors && \
+    deactivate
 
 # Clone the Automatic1111 Extensions
 RUN git clone https://github.com/d8ahazard/sd_dreambooth_extension.git extensions/sd_dreambooth_extension && \
@@ -179,11 +179,6 @@ RUN mkdir -p /stable-diffusion-webui/models/insightface && \
 # Configure ReActor to use the GPU instead of the CPU
 RUN echo "CUDA" > /stable-diffusion-webui/extensions/sd-webui-reactor/last_device.txt
 
-# Fix Tensorboard
-RUN pip3 uninstall -y tensorboard tb-nightly && \
-    pip3 install tensorboard==2.15.2 tensorflow && \
-    pip3 cache purge
-
 # Add SDXL models and VAE
 # These need to already have been downloaded:
 #   wget https://huggingface.co/lllyasviel/fav_models/resolve/main/fav/realisticVisionV51_v51VAE.safetensors
@@ -206,6 +201,12 @@ RUN python3 -m venv --system-site-packages venv && \
 COPY forge/cache-sd-model.py forge/install-forge.py ./
 RUN source venv/bin/activate && \
     python3 -m install-forge --skip-torch-cuda-test && \
+    deactivate
+
+# Cache the Stable Diffusion Models
+# SDXL models result in OOM kills with 8GB system memory, need 30GB+ to cache these
+RUN source /venv/bin/activate && \
+    python3 cache-sd-model.py --no-half-vae --no-half --xformers --use-cpu=all --ckpt /sd-models/realisticVisionV51_v51VAE.safetensors && \
     deactivate
 
 # Copy Stable Diffusion WebUI Forge config files
