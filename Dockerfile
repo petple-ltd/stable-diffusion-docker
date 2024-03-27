@@ -1,18 +1,11 @@
 # Stage 1: Base
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as base
 
-ARG INDEX_URL
-ARG TORCH_VERSION
-ARG XFORMERS_VERSION
-
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Europe/London \
     PYTHONUNBUFFERED=1 \
     SHELL=/bin/bash
-
-# Create workspace working directory
-WORKDIR /
 
 # Install Ubuntu packages
 RUN apt update && \
@@ -69,6 +62,9 @@ RUN apt update && \
 RUN ln -s /usr/bin/python3.10 /usr/bin/python
 
 # Install Torch, xformers and tensorrt
+ARG INDEX_URL
+ARG TORCH_VERSION
+ARG XFORMERS_VERSION
 RUN pip3 install --no-cache-dir torch==${TORCH_VERSION} torchvision torchaudio --index-url ${INDEX_URL} && \
     pip3 install --no-cache-dir xformers==${XFORMERS_VERSION} --index-url ${INDEX_URL} &&  \
     pip3 install --no-cache-dir tensorrt
@@ -131,9 +127,11 @@ RUN git clone https://github.com/d8ahazard/sd_dreambooth_extension.git extension
 
 # Install dependencies for Deforum, ControlNet, ReActor, Infinite Image Browsing,
 # After Detailer, and CivitAI Browser+ extensions
+ARG CONTROLNET_COMMIT
 RUN source /venv/bin/activate && \
     pip3 install basicsr && \
     cd /stable-diffusion-webui/extensions/sd-webui-controlnet && \
+    git checkout ${CONTROLNET_COMMIT} && \
     pip3 install -r requirements.txt && \
     cd /stable-diffusion-webui/extensions/deforum && \
     pip3 install -r requirements.txt && \
