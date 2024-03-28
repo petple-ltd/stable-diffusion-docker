@@ -115,8 +115,8 @@ RUN source /venv/bin/activate && \
 
 # Clone the Automatic1111 Extensions
 RUN git clone https://github.com/d8ahazard/sd_dreambooth_extension.git extensions/sd_dreambooth_extension && \
+    git clone https://github.com/Mikubill/sd-webui-controlnet.git extensions/sd-webui-controlnet && \
     git clone --depth=1 https://github.com/deforum-art/sd-webui-deforum.git extensions/deforum && \
-    git clone --depth=1 https://github.com/Mikubill/sd-webui-controlnet.git extensions/sd-webui-controlnet && \
     git clone --depth=1 https://github.com/ashleykleynhans/a1111-sd-webui-locon.git extensions/a1111-sd-webui-locon && \
     git clone --depth=1 https://github.com/Gourieff/sd-webui-reactor.git extensions/sd-webui-reactor && \
     git clone --depth=1 https://github.com/zanllp/sd-webui-infinite-image-browsing.git extensions/infinite-image-browsing && \
@@ -291,9 +291,14 @@ RUN curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/scr
     apt install speedtest
 
 # Install CivitAI Model Downloader
-RUN git clone --depth=1 https://github.com/ashleykleynhans/civitai-downloader.git && \
-    mv civitai-downloader/download.sh /usr/local/bin/download-model && \
-    chmod +x /usr/local/bin/download-model
+ARG CIVITAI_DOWNLOADER_VERSION
+RUN git clone https://github.com/ashleykleynhans/civitai-downloader.git && \
+    cd civitai-downloader && \
+    git checkout tags/${CIVITAI_DOWNLOADER_VERSION} && \
+    cp download.py /usr/local/bin/download-model && \
+    chmod +x /usr/local/bin/download-model && \
+    cd .. && \
+    rm -rf civitai-downloader
 
 # Copy Stable Diffusion Web UI config files
 COPY a1111/relauncher.py a1111/webui-user.sh a1111/config.json a1111/ui-config.json /stable-diffusion-webui/
