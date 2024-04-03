@@ -26,9 +26,9 @@ Now with SDXL support.
 * [Dreambooth extension](
   https://github.com/d8ahazard/sd_dreambooth_extension) 1.0.14
 * [ControlNet extension](
-  https://github.com/Mikubill/sd-webui-controlnet) v1.1.442
+  https://github.com/Mikubill/sd-webui-controlnet) v1.1.443
 * [After Detailer extension](
-  https://github.com/Bing-su/adetailer) v24.3.0
+  https://github.com/Bing-su/adetailer) v24.3.5
 * [Locon extension](
   https://github.com/ashleykleynhans/a1111-sd-webui-locon)
 * [ReActor extension](https://github.com/Gourieff/sd-webui-reactor) (replaces roop)
@@ -54,6 +54,7 @@ Now with SDXL support.
 * [croc](https://github.com/schollz/croc)
 * [rclone](https://rclone.org/)
 * [Application Manager](https://github.com/ashleykleynhans/app-manager)
+* [CivitAI Downloader](https://github.com/ashleykleynhans/civitai-downloader)
 
 ## Available on RunPod
 
@@ -158,12 +159,6 @@ killing the services to view the logs
 
 Pull requests and issues on [GitHub](https://github.com/ashleykleynhans/stable-diffusion-docker)
 are welcome. Bug fixes and new features are encouraged.
-
-You can contact me and get help with deploying your container
-to RunPod on the RunPod Discord Server below,
-my username is **ashleyk**.
-
-<a target="_blank" href="https://discord.gg/pJ3P2DbUUq">![Discord Banner 2](https://discordapp.com/api/guilds/912829806415085598/widget.png?style=banner2)</a>
 
 ## Appreciate my work?
 
